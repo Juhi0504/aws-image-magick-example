@@ -4,8 +4,8 @@
 rm -rf output-al2023-libheif1.19.2
 rm -f imagemagick-al2023-libheif1.19.2.tar.gz
 
-echo "Building Docker image..."
-docker build -t al2023-libheif1.19.2 -f Dockerfile.al2023-libheif1.19.2 .
+#echo "Building Docker image..."
+#docker build -t al2023-libheif1.19.2 -f Dockerfile.al2023-libheif1.19.2 .
 
 # Create output directories
 mkdir -p output-al2023-libheif1.19.2/bin
@@ -13,7 +13,7 @@ mkdir -p output-al2023-libheif1.19.2/lib
 mkdir -p output-al2023-libheif1.19.2/lib64
 
 # Create a container from the image
-CONTAINER_ID=$(docker create al2023-libheif1.19.2)
+CONTAINER_ID=$(docker create al2023-libheif1.19.2_dependencies)
 
 # Extract the binaries and libraries
 echo "Extracting binaries and libraries..."
@@ -44,6 +44,18 @@ docker cp $CONTAINER_ID:/usr/local/lib/libde265.so.0.1.4 output-al2023-libheif1.
 # Extract libx265 libraries
 docker cp $CONTAINER_ID:/usr/local/lib/libx265.so output-al2023-libheif1.19.2/lib/
 docker cp $CONTAINER_ID:/usr/local/lib/libx265.so.199 output-al2023-libheif1.19.2/lib/
+
+# Extract openjpeg2 libraries
+docker cp $CONTAINER_ID:/usr/local/lib/libopenjp2.so.7 output-al2023-libheif1.19.2/lib/ || true
+docker cp $CONTAINER_ID:/usr/local/lib/libopenjp2.so output-al2023-libheif1.19.2/lib/ || true
+
+# Extract lcms2 libraries
+docker cp $CONTAINER_ID:/usr/local/lib/liblcms2.so.2 output-al2023-libheif1.19.2/lib/ || true
+docker cp $CONTAINER_ID:/usr/local/lib/liblcms2.so output-al2023-libheif1.19.2/lib/ || true
+
+# Extract libxml2 libraries
+docker cp $CONTAINER_ID:/usr/local/lib/libxml2.so.2 output-al2023-libheif1.19.2/lib/ || true
+docker cp $CONTAINER_ID:/usr/local/lib/libxml2.so output-al2023-libheif1.19.2/lib/ || true
 
 # Extract ImageMagick libraries
 docker cp $CONTAINER_ID:/usr/local/lib/libMagickCore-7.Q16HDRI.so output-al2023-libheif1.19.2/lib/
@@ -90,7 +102,7 @@ chmod +x output-al2023-libheif1.19.2/bin/run-convert.sh output-al2023-libheif1.1
 chmod +x output-al2023-libheif1.19.2/bin/magick output-al2023-libheif1.19.2/bin/heif-info 2>/dev/null || true
 
 # Remove container
-docker rm $CONTAINER_ID
+#docker rm $CONTAINER_ID
 
 # Create a tarball for distribution
 tar -czf imagemagick-al2023-libheif1.19.2.tar.gz output-al2023-libheif1.19.2/

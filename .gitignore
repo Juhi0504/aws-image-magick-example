@@ -1,2 +1,6 @@
 binaries/result
 .DS_Store
+
+testlib/
+
+.idea
